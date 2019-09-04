@@ -15,7 +15,18 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {});
+router.get("/:id", validatePostId, (req, res) => {
+  const postId = req.params.id;
+  Posts.getById(postId)
+    .then(post => {
+      res.status(200).json(post);
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ error: "The post information could not be retrieved" });
+    });
+});
 
 router.delete("/:id", (req, res) => {});
 
