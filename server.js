@@ -10,8 +10,8 @@ server.use(express.json());
 server.use(logger);
 
 // Routers
-server.use("/post", postRouter);
-server.use("/user", userRouter);
+server.use("/posts", postRouter);
+server.use("/users", userRouter);
 
 server.get("/", (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);

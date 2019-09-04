@@ -19,7 +19,18 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {});
+router.get("/:id", validateUserId, (req, res) => {
+  const userId = req.params.id;
+  Users.getById(userId)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ error: "The user information could not be retrieved" });
+    });
+});
 
 router.get("/:id/posts", (req, res) => {});
 
@@ -32,12 +43,18 @@ router.put("/:id", (req, res) => {});
 function validateUserId(req, res, next) {
   let id = req.params.id;
 
-  if (id) {
-    req.user = req.body;
-    console.log("req.user", req.body);
-  } else {
-    res.status(400).json({ message: "invalid user id" });
-  }
+  Users.getById(id)
+    .then(user => {
+      console.log(user);
+      if (user) {
+        req.user = user;
+      } else {
+        res.status(400).json({ message: "invalid user id" });
+      }
+    })
+    .catch(error =>
+      res.status(500).json({ message: "The user could not be retrieved" })
+    );
 
   next();
 }
