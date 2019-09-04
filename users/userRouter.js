@@ -1,10 +1,23 @@
 const router = require("express").Router();
 
+const Users = require("./userDb.js");
+
 router.post("/", (req, res) => {});
 
 router.post("/:id/posts", (req, res) => {});
 
-router.get("/", (req, res) => {});
+// GET /users
+router.get("/", (req, res) => {
+  Users.get()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ error: "The users information could not be retrieved" });
+    });
+});
 
 router.get("/:id", (req, res) => {});
 
