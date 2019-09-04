@@ -45,7 +45,17 @@ router.get("/:id", validateUserId, (req, res) => {
 
 router.get("/:id/posts", (req, res) => {});
 
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", validateUserId, (req, res) => {
+  const userId = req.params.id;
+
+  Users.remove(userId)
+    .then(user => res.status(200).json(user))
+    .catch(error =>
+      res
+        .status(500)
+        .json({ error: "The user information could not be deleted" })
+    );
+});
 
 router.put("/:id", (req, res) => {});
 
