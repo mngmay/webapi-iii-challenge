@@ -117,7 +117,8 @@ function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  if (!req.body) {
+  console.log(req.body);
+  if (Object.keys(req.body) < 1) {
     return res.status(400).json({ message: "missing user data" });
   }
   if (!req.body.name) {
