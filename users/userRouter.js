@@ -2,7 +2,18 @@ const router = require("express").Router();
 
 const Users = require("./userDb.js");
 
-router.post("/", (req, res) => {});
+// POST /users
+router.post("/", validateUser, (req, res) => {
+  const user = req.body;
+
+  Users.insert(user)
+    .then(user => res.status(201).json(user))
+    .catch(error =>
+      res
+        .status(500)
+        .json({ error: "The user could not be posted to the database" })
+    );
+});
 
 router.post("/:id/posts", (req, res) => {});
 
@@ -63,9 +74,12 @@ function validateUser(req, res, next) {
   if (!req.body) {
     return res.status(400).json({ message: "missing user data" });
   }
-  if (!req.params.name) {
+  if (!req.body.name) {
+    console.log(req.body);
     return res.status(400).json({ message: "missing required name field" });
   }
+
+  req.user = req.body;
 
   next();
 }
