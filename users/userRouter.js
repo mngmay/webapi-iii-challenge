@@ -131,7 +131,7 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  if (!req.body) {
+  if (Object.keys(req.body) < 1) {
     return res.status(400).json({ message: "missing post data" });
   }
   if (!req.body.text) {
