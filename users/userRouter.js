@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const Users = require("./userDb.js");
+const Posts = require("../posts/postDb.js");
 
 // POST /users
 router.post("/", validateUser, (req, res) => {
@@ -43,7 +44,17 @@ router.get("/:id", validateUserId, (req, res) => {
     });
 });
 
-router.get("/:id/posts", (req, res) => {});
+router.get("/:id/posts", validateUserId, (req, res) => {
+  const userId = req.params.id;
+
+  Posts.getById(userId)
+    .then(posts => res.status(200).json(posts))
+    .catch(error => {
+      res
+        .status(500)
+        .json({ error: "The user's posts could not be retrieved" });
+    });
+});
 
 router.delete("/:id", validateUserId, (req, res) => {
   const userId = req.params.id;
