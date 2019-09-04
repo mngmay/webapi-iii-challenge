@@ -18,9 +18,7 @@ router.post("/", validateUser, (req, res) => {
 
 router.post("/:id/posts", validateUserId, validatePost, (req, res) => {
   const newPost = req.body;
-  console.log(req.user);
-  newPost.user_id = req.user.id;
-  console.log(req.body);
+  newPost.user_id = req.params.id;
 
   Posts.insert(newPost)
     .then(post => res.status(201).json(post))
@@ -105,7 +103,6 @@ function validateUserId(req, res, next) {
 
   Users.getById(id)
     .then(user => {
-      console.log(user);
       if (user) {
         req.user = user;
       } else {
@@ -124,7 +121,6 @@ function validateUser(req, res, next) {
     return res.status(400).json({ message: "missing user data" });
   }
   if (!req.body.name) {
-    console.log(req.body);
     return res.status(400).json({ message: "missing required name field" });
   }
 
