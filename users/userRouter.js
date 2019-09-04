@@ -16,7 +16,20 @@ router.post("/", validateUser, (req, res) => {
     );
 });
 
-router.post("/:id/posts", (req, res) => {});
+router.post("/:id/posts", validateUserId, validatePost, (req, res) => {
+  const newPost = req.body;
+  console.log(req.user);
+  newPost.user_id = req.user.id;
+  console.log(req.body);
+
+  Posts.insert(newPost)
+    .then(post => res.status(201).json(post))
+    .catch(error =>
+      res
+        .status(500)
+        .json({ error: "The post could not be posted to the database" })
+    );
+});
 
 // GET /users
 router.get("/", (req, res) => {
@@ -68,7 +81,22 @@ router.delete("/:id", validateUserId, (req, res) => {
     );
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", validateUserId, (req, res) => {
+  const userId = req.params.id;
+  const changes = req.body;
+
+  if (!changes.name) {
+    return res
+      .status(400)
+      .json({ error: "Please provide a name for the user." });
+  }
+
+  Users.update(userId, changes)
+    .then(updated => res.status(200).json(updated))
+    .catch(error =>
+      res.status(500).json({ error: "The user could not be updated" })
+    );
+});
 
 //custom middleware
 
@@ -109,7 +137,7 @@ function validatePost(req, res, next) {
   if (!req.body) {
     return res.status(400).json({ message: "missing post data" });
   }
-  if (!req.params.text) {
+  if (!req.body.text) {
     return res.status(400).json({ message: "missing required text field" });
   }
 
