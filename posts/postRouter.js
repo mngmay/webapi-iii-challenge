@@ -40,7 +40,20 @@ router.delete("/:id", validatePostId, (req, res) => {
     );
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", validatePostId, (req, res) => {
+  const postId = req.params.id;
+  const changes = req.body;
+
+  if (!changes.text) {
+    return res.status(400).json({ error: "Please provide text for the post." });
+  }
+
+  Posts.update(postId, changes)
+    .then(updated => res.status(200).json(updated))
+    .catch(error =>
+      res.status(500).json({ error: "The post could not be updated" })
+    );
+});
 
 // custom middleware
 
